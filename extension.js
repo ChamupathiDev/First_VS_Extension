@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 const axios = require('axios');
+const xmlParser = require('fast-xml-parser');
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -11,7 +12,7 @@ const axios = require('axios');
  */
 async function activate(context) {
 	const res = await axios.get("https://blog.webdevsimplified.com/rss.xml")
-	console.log(res.data);
+	console.log(xmlParser.parse(res.data))
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
