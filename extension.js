@@ -13,17 +13,30 @@ const { XMLParser } = require('fast-xml-parser');
 async function activate(context) {
 	const res = await axios.get("https://blog.webdevsimplified.com/rss.xml")
 	const parser = new XMLParser();
-    const articles = parser.parse(res.data).rss.channel.item;
+    const articles = parser.parse(res.data).rss.channel.item.map
+	(article => {
+		return {
+			label: article.title,
+			detail: article.description,
+			link: article.link,
+		}
+	})
     console.log(articles);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('wds-search-blog-example.SearchWdsBlogExample', function () {
-		// The code you place here will be executed every time your command is executed
+	const disposable = vscode.commands.registerCommand('wds-search-blog-example.SearchWdsBlogExample', 
+	async function () {
+		const article = await vscode.window.showQuickPick(articles, {
+			matchOnDetail: true,
+		});
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from WDS Search Blog Example!');
+		if (article == null) return
+
+		vscode.env.openExternal(article.link)
+
+
 	});
 
 	context.subscriptions.push(disposable);
