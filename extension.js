@@ -13,8 +13,8 @@ const { XMLParser } = require('fast-xml-parser');
 async function activate(context) {
 	const res = await axios.get("https://blog.webdevsimplified.com/rss.xml")
 	const parser = new XMLParser();
-    const parsedData = parser.parse(res.data);
-    console.log(parsedData);
+    const articles = parser.parse(res.data).rss.channel.item;
+    console.log(articles);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
